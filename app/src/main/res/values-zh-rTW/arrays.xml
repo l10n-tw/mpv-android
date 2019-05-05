@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Language: zh_TW, thanks to the following contributor to these contributions!
+    pan93412 <pan93412@gmail.com>, 2019
+-->
 <resources>
     <string-array name="background_play_entries">
-        <item>Never</item>
-        <item>Audio files only</item>
-        <item>Always (Video files too)</item>
+        <item>永不</item>
+        <item>僅音訊檔</item>
+        <item>永遠（包含影片檔）</item>
     </string-array>
     <string-array name="background_play_values" translatable="false">
         <item>never</item>
@@ -11,9 +15,9 @@
         <item>always</item>
     </string-array>
     <string-array name="auto_rotation_entries">
-        <item>Automatic</item>
-        <item>Default Landscape</item>
-        <item>Default Portrait</item>
+        <item>自動</item>
+        <item>預設橫向</item>
+        <item>預設直向</item>
     </string-array>
     <string-array name="auto_rotation_values" translatable="false">
         <item>auto</item>
@@ -36,7 +40,7 @@
     </string-array>
 
     <string-array name="deband_entries">
-        <item>Disabled</item>
+        <item>停用</item>
         <item>CPU</item>
         <item>GPU</item>
     </string-array>
@@ -58,11 +62,11 @@
     </string-array>
 
     <string-array name="stats_entries">
-        <item>None</item>
-        <item>Native: General</item>
-        <item>Native: FPS only</item>
-        <item>stats.lua: General</item>
-        <item>stats.lua: Timings</item>
+        <item>無</item>
+        <item>原生：一般</item>
+        <item>原生：僅 FPS</item>
+        <item>stats.lua：一般</item>
+        <item>stats.lua：時間</item>
     </string-array>
     <string-array name="stats_values" translatable="false">
         <item></item>

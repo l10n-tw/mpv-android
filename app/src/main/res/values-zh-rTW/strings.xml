@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- This file contains resource definitions for displayed strings, allowing
      them to be changed based on the locale and options. -->
+     
+<!--
+    Language: zh_TW, thanks to the following contributor to these contributions!
+    pan93412 <pan93412@gmail.com>, 2019
+-->
 <resources>
     <!-- Simple strings. -->
     <string name="mpv_activity">mpv</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel">Cancel</string>
-    <string name="dialog_save">Save</string>
+    <string name="title_activity_settings">設定</string>
+    <string name="dialog_ok">確定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_save">儲存</string>
 
     <!-- Action buttons -->
-    <string name="action_settings">Settings</string>
-    <string name="action_open_url">Open URL</string>
+    <string name="action_settings">設定</string>
+    <string name="action_open_url">開啟連結</string>
 
     <!-- Strings related to Settings -->
-    <string name="pref_header_general">General</string>
+    <string name="pref_header_general">一般</string>
 
-    <string name="pref_default_file_manager_path_title">Default File Manager Path</string>
-    <string name="pref_default_file_manager_path_hint">Set the initial file manager path</string>
+    <string name="pref_default_file_manager_path_title">預設檔案管理器路徑</string>
+    <string name="pref_default_file_manager_path_hint">設定初始檔案管理器路徑</string>
     <string name="pref_default_file_manager_path_summary" translatable="false">%s</string>
 
-    <string name="pref_default_audio_language_title">Default Audio Language</string>
+    <string name="pref_default_audio_language_title">預設音訊語言</string>
     <string name="pref_default_audio_language_hint">Set the default value for selecting audio by language when playing a video with multiple audio streams</string>
     <string name="pref_default_audio_language_summary" translatable="false">%s</string>
 
-    <string name="pref_default_subtitle_language_title">Default Subtitle Language</string>
+    <string name="pref_default_subtitle_language_title">預設字幕語言</string>
     <string name="pref_default_subtitle_language_hint">Set the default value for selecting subtitles by language when playing a video with multiple subtitles</string>
     <string name="pref_default_subtitle_language_summary" translatable="false">%s</string>
 
-    <string name="pref_hardware_decoding_title">Hardware decoding</string>
+    <string name="pref_hardware_decoding_title">硬體解碼</string>
     <string name="pref_hardware_decoding_summary">This option if selected will attempt hardware decoding before falling back to software</string>
 
-    <string name="pref_touch_gestures_title">Touch gestures</string>
-    <string name="pref_touch_gestures_summary">Control brightness, volume or seek in either direction using touch gestures</string>
+    <string name="pref_touch_gestures_title">觸控手勢</string>
+    <string name="pref_touch_gestures_summary">使用觸控手勢控制亮度、音量或 seek in either direction</string> <!-- fuzzy: waiting for review -->
 
-    <string name="pref_background_play_title">Background playback</string>
-    <string name="pref_background_play_summary">When to automatically resume playback in background</string>
+    <string name="pref_background_play_title">背景回放</string>
+    <string name="pref_background_play_summary">要自動在背景繼續播放的時機</string>
     <string name="pref_background_play_default">never</string>
 
-    <string name="pref_save_position_title">Save position on quit</string>
+    <string name="pref_save_position_title">結束時儲存位置</string>
     <string name="pref_save_position_summary">Remember current playback position on exit. When the same file is played again, seek to the previous position.</string>
 
     <string name="pref_auto_rotation_title">Screen orientation</string>
@@ -46,7 +51,7 @@
     <string name="pref_auto_rotation_default">auto</string>
 
 
-    <string name="pref_header_video">Video</string>
+    <string name="pref_header_video">影片</string>
 
     <string name="pref_video_upscale_title">Upscaling method</string>
 
@@ -55,8 +60,8 @@
     <string name="pref_video_debanding_title">Debanding</string>
     <string name="pref_video_debanding_summary">Select video debanding mode</string>
 
-    <string name="pref_video_sync_title">Video sync</string>
-    <string name="pref_video_sync_summary">How the player synchronizes audio and video</string>
+    <string name="pref_video_sync_title">影片同步</string>
+    <string name="pref_video_sync_summary">設定播放器同步音訊及影片的方式</string>
     <string name="pref_video_sync_default">audio</string> <!-- equal to mpv default, see options.rst -->
 
     <string name="pref_video_tscale_title">Temporal interpolation filter</string>
@@ -65,40 +70,40 @@
     <string name="pref_video_interpolation_title">Interpolation</string>
     <string name="pref_video_interpolation_summary">Reduce judder caused by mismatched video FPS and display Hz\nRequires Video sync set to any of the display-* modes</string>
 
-    <string name="pref_video_fastdecode_title">Low-quality video decoding</string>
+    <string name="pref_video_fastdecode_title">低品質影片解碼</string>
     <string name="pref_video_fastdecode_summary">Trades quality for speed and thus fluent playback.\nREDUCES QUALITY A LOT</string>
 
 
-    <string name="pref_header_developer">Developer</string>
+    <string name="pref_header_developer">開發用功能</string>
 
-    <string name="pref_developer_stats_title">Show stats</string>
-    <string name="pref_developer_stats_summary">Select which statistics are displayed</string>
+    <string name="pref_developer_stats_title">顯示統計</string>
+    <string name="pref_developer_stats_summary">選取要顯示的統計</string>
 
-    <string name="pref_developer_gpudebug_title">Enable OpenGL debugging</string>
+    <string name="pref_developer_gpudebug_title">開啟 OpenGL 偵錯</string>
     <string name="pref_developer_gpudebug_summary">Switches video rendering to a debug mode</string>
 
 
-    <string name="pref_header_advanced">Advanced</string>
+    <string name="pref_header_advanced">進階</string>
 
-    <string name="pref_advanced_version">Version information</string>
+    <string name="pref_advanced_version">版本資訊</string>
 
-    <string name="pref_advanced_mpvconf">Edit mpv.conf</string>
-    <string name="pref_advanced_mpvconf_message">You can directly edit mpv\'s config here.\n\nImportant: mpv-android will overwrite some settings, so don\'t try to set e.g. \"dscale\" here.\nGenerally this applies to all settings that have a \"native\" equivalent in the settings menu.</string>
+    <string name="pref_advanced_mpvconf">編輯 mpv.conf</string>
+    <string name="pref_advanced_mpvconf_message">您能在此直接編輯 mpv 的組態設定檔。\n\n重要：mpv-android 會覆寫部份設定，所以請別在這裡嘗試設定例如「dscale」的項目。\n一般來說這會套用至所有在設定選單有「原生」等效項目的設定。</string>
 
-    <string name="pref_advanced_inputconf">Edit input.conf</string>
-    <string name="pref_advanced_inputconf_message">You can edit input.conf here, this is mainly useful for TV remotes and keyboards.\n\nImportant: mpv-android has some hardcoded key handlers which can\'t be redefined here, e.g. \'j\' to cycle subtitles.</string>
+    <string name="pref_advanced_inputconf">編輯 input.conf</string>
+    <string name="pref_advanced_inputconf_message">您可在此編輯 input.conf，這主要用在遠端電視和鍵盤上。\n\n重要：mpv-android 已有部份寫死，不能在此重複定義的的按鍵處理器，例如「j」循環切換字幕。</string>
 
     <!-- Strings indirectly related to Settings -->
-    <string name="scaler_param1">Param 1:</string>
-    <string name="scaler_param2">Param 2:</string>
+    <string name="scaler_param1">參數 1：</string>
+    <string name="scaler_param2">參數 2：</string>
 
-    <string name="nnf_new_folder">New folder</string>
-    <string name="nnf_create_folder_error">Failed to create folder</string>
-    <string name="nnf_name">Name</string>
-    <string name="nnf_select_something_first">Please select something first</string>
-    <string name="nnf_need_valid_filename">Please enter or select a valid filename</string>
-    <string name="nnf_permission_external_write_denied">Permission to access file system denied</string>
-    <string name="nnf_filename">Filename</string>
+    <string name="nnf_new_folder">新增資料夾</string>
+    <string name="nnf_create_folder_error">無法建立資料夾</string>
+    <string name="nnf_name">名稱</string>
+    <string name="nnf_select_something_first">請先選取項目</string>
+    <string name="nnf_need_valid_filename">請輸入或選取有效檔名</string>
+    <string name="nnf_permission_external_write_denied">拒絕存取檔案系統的權限</string>
+    <string name="nnf_filename">檔名</string>
     <string name="nnf_list_ok" translatable="false">@android:string/ok</string>
     <string name="nnf_list_cancel" translatable="false">@android:string/cancel</string>
     <string name="nnf_new_folder_ok" translatable="false">@android:string/ok</string>
