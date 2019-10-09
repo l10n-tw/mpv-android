@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -17,7 +18,7 @@ import android.util.Log
     - Update the persistent notification (which we're forced to display)
 */
 
-class BackgroundPlaybackService : Service(), EventObserver {
+class BackgroundPlaybackService : Service(), MPVLib.EventObserver {
     override fun onCreate() {
         MPVLib.addObserver(this)
         MPVLib.observeProperty("media-title", MPVLib.mpvFormat.MPV_FORMAT_STRING)
@@ -33,9 +34,12 @@ class BackgroundPlaybackService : Service(), EventObserver {
     private fun createButtonIntent(action: String): PendingIntent {
         val intent = Intent()
         intent.action = "is.xyz.mpv.$action"
+        // turn into explicit intent:
+        intent.component = ComponentName(applicationContext, NotificationButtonReceiver::class.java)
         return PendingIntent.getBroadcast(this, 0, intent, 0)
     }
 
+    @Suppress("DEPRECATION") // deliberate to support lower API levels
     private fun buildNotification(): Notification {
         val notificationIntent = Intent(this, MPVActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
@@ -63,7 +67,7 @@ class BackgroundPlaybackService : Service(), EventObserver {
             // action icons need to be 32dp according to the docs
             builder.addAction(R.drawable.ic_skip_previous_black_32dp, "Prev", createButtonIntent("ACTION_PREV"))
             builder.addAction(R.drawable.ic_skip_next_black_32dp, "Next", createButtonIntent("ACTION_NEXT"))
-            builder.setStyle(Notification.MediaStyle().setShowActionsInCompactView(0, 1))
+            builder.style = Notification.MediaStyle().setShowActionsInCompactView(0, 1)
         }
 
         return builder.build()
@@ -84,12 +88,7 @@ class BackgroundPlaybackService : Service(), EventObserver {
         val notification = buildNotification()
         startForeground(NOTIFICATION_ID, notification)
 
-        // resume playback (audio-only)
-
-        MPVLib.setPropertyString("vid", "no")
-        MPVLib.setPropertyBoolean("pause", false)
-
-        return Service.START_NOT_STICKY // Android can't restart this service on its own
+        return START_NOT_STICKY // Android can't restart this service on its own
     }
 
     override fun onDestroy() {
@@ -131,8 +130,9 @@ class BackgroundPlaybackService : Service(), EventObserver {
            to display alongside the permanent notification */
         var thumbnail: Bitmap? = null
 
-        private val NOTIFICATION_ID = 12345 // TODO: put this into resource file
-        val NOTIFICATION_CHANNEL_ID = "background_playback"
-        private val TAG = "mpv"
+        private const val NOTIFICATION_ID = 12345 // TODO: put this into resource file
+        const val NOTIFICATION_CHANNEL_ID = "background_playback"
+
+        private const val TAG = "mpv"
     }
 }

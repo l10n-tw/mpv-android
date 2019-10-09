@@ -93,7 +93,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_chat_bubble_black_24dp"
+                android:src="@drawable/ic_audiotrack_black_24dp"
                 android:text="..."
                 android:textColor="@android:color/white"
                 android:tint="@color/tint_normal" />
@@ -103,7 +103,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_short_text_black_24dp"
+                android:src="@drawable/ic_subtitles_black_24dp"
                 android:text="..."
                 android:textColor="@android:color/white"
                 android:tint="@color/tint_normal" />
@@ -171,15 +171,14 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/orientationBtn"
+            android:id="@+id/topMenuBtn"
             style="?android:attr/buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="cycleOrientation"
+            android:onClick="openTopMenu"
             android:padding="4dp"
-            android:src="@drawable/ic_screen_rotation_black_24dp"
-            android:tint="@color/tint_normal"
-            android:visibility="gone" />
+            android:src="@drawable/ic_settings_black_24dp"
+            android:tint="@color/tint_normal" />
 
     </LinearLayout>
 

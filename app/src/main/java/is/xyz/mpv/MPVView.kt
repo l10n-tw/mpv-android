@@ -11,6 +11,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.preference.PreferenceManager
 import android.view.*
+import kotlin.math.abs
 import kotlin.reflect.KProperty
 
 internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(context, attrs), SurfaceHolder.Callback {
@@ -92,14 +93,11 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
             MPVLib.setOptionString("deband", "yes")
         }
 
-        val vidsync = sharedPreferences.getString("video_sync", resources.getString(R.string.pref_video_sync_default))
+        val vidsync = sharedPreferences.getString("video_sync", resources.getString(R.string.pref_video_interpolation_sync_default))
         MPVLib.setOptionString("video-sync", vidsync)
 
-        if (sharedPreferences.getBoolean("video_interpolation", false)) {
-            if (!vidsync.startsWith("display-"))
-                Log.e(TAG, "Interpolation enabled but video-sync not set to a 'display' mode, this won't work!")
+        if (sharedPreferences.getBoolean("video_interpolation", false))
             MPVLib.setOptionString("interpolation", "yes")
-        }
 
         if (sharedPreferences.getBoolean("gpudebug", false))
             MPVLib.setOptionString("gpu-debug", "yes")
@@ -129,9 +127,10 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
         this.filePath = filePath
     }
 
-    fun onPause() {
+    fun onPause(actuallyPause: Boolean) {
         MPVLib.setPropertyString("vid", "no")
-        paused = true
+        if (actuallyPause)
+            paused = true
     }
     
     fun onResume() {
@@ -149,6 +148,20 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
         holder.removeCallback(this)
 
         MPVLib.destroy()
+    }
+
+    fun onPointerEvent(event: MotionEvent): Boolean {
+        assert (event.isFromSource(InputDevice.SOURCE_CLASS_POINTER))
+        if (event.actionMasked == MotionEvent.ACTION_SCROLL) {
+            val h = event.getAxisValue(MotionEvent.AXIS_HSCROLL)
+            val v = event.getAxisValue(MotionEvent.AXIS_VSCROLL)
+            if (abs(h) > 0)
+                MPVLib.command(arrayOf("keypress", if (h < 0) "WHEEL_LEFT" else "WHEEL_RIGHT"))
+            if (abs(v) > 0)
+                MPVLib.command(arrayOf("keypress", if (v < 0) "WHEEL_DOWN" else "WHEEL_UP"))
+            return true
+        }
+        return false
     }
 
     fun onKey(event: KeyEvent): Boolean {
@@ -195,17 +208,19 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
                 Property("duration", MPV_FORMAT_INT64),
                 Property("pause", MPV_FORMAT_FLAG),
                 Property("track-list", MPV_FORMAT_NONE),
-                Property("video-params", MPV_FORMAT_NONE)
+                Property("video-params", MPV_FORMAT_NONE),
+                Property("playlist-pos", MPV_FORMAT_NONE),
+                Property("playlist-count", MPV_FORMAT_NONE)
         )
 
         for ((name, format) in p)
             MPVLib.observeProperty(name, format)
     }
 
-    fun addObserver(o: EventObserver) {
+    fun addObserver(o: MPVLib.EventObserver) {
         MPVLib.addObserver(o)
     }
-    fun removeObserver(o: EventObserver) {
+    fun removeObserver(o: MPVLib.EventObserver) {
         MPVLib.removeObserver(o)
     }
 
@@ -217,9 +232,9 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
 
     fun loadTracks() {
         for (type in tracks.keys) {
-            tracks[type]!!.clear()
+            tracks.getValue(type).clear()
             // pseudo-track to allow disabling audio/subs
-            tracks[type]!!.add(Track(-1, "None"))
+            tracks.getValue(type).add(Track(-1, "None"))
         }
         val count = MPVLib.getPropertyInt("track-list/count")!!
         for (i in 0 until count) {
@@ -234,8 +249,25 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
                     mpvId=mpvId,
                     name="#$mpvId: $lang"
                     )
-            tracks[type]!!.add(track)
+            tracks.getValue(type).add(track)
         }
+    }
+
+    data class PlaylistFile(val index: Int, val name: String)
+
+    fun loadPlaylist(): MutableList<PlaylistFile> {
+        val playlist: MutableList<PlaylistFile> = mutableListOf()
+        val count = MPVLib.getPropertyInt("playlist-count")!!
+        for (i in 0 until count) {
+            val filename = MPVLib.getPropertyString("playlist/$i/filename")!!
+                    .replaceBeforeLast('/', "").trimStart('/')
+            val title = MPVLib.getPropertyString("playlist/$i/title")
+            playlist.add(PlaylistFile(
+                    index=i,
+                    name=title ?: filename
+            ))
+        }
+        return playlist
     }
 
     private var filePath: String? = null
@@ -296,11 +328,14 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
     val audioChannels: Int?
         get() = MPVLib.getPropertyInt("audio-params/channel-count")
 
+    val vid: Int
+        get() = MPVLib.getPropertyString("vid")?.toIntOrNull() ?: -1
+
     class TrackDelegate {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): Int {
             val v = MPVLib.getPropertyString(property.name)
             // we can get null here for "no" or other invalid value
-            return v.toIntOrNull() ?: -1
+            return v?.toIntOrNull() ?: -1
         }
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
             if (value == -1)
@@ -321,13 +356,15 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
     fun cycleHwdec() = MPVLib.setPropertyString("hwdec", if (hwdecActive!!) "no" else "mediacodec-copy")
 
     fun cycleSpeed() {
-        val speeds = arrayOf(0.1, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0)
+        val speeds = arrayOf(0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0)
         playbackSpeed = speeds[(speeds.indexOf(playbackSpeed) + 1) % speeds.size]
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-        MPVLib.setPropertyString("android-surface-size", "${width}x${height}")
+        MPVLib.setPropertyString("android-surface-size", "${width}x$height")
     }
+
+    // Surface callbacks
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         Log.w(TAG, "Creating libmpv Surface")
@@ -347,6 +384,6 @@ internal class MPVView(context: Context, attrs: AttributeSet) : SurfaceView(cont
     }
 
     companion object {
-        private val TAG = "mpv"
+        private const val TAG = "mpv"
     }
 }
